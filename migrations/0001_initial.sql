@@ -1,0 +1,14 @@
+PRAGMA foreign_keys=ON;
+CREATE TABLE IF NOT EXISTS portfolios(id TEXT PRIMARY KEY,name TEXT NOT NULL,kind TEXT NOT NULL,currency TEXT NOT NULL,created_at TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS imports(id TEXT PRIMARY KEY,portfolio_id TEXT NOT NULL REFERENCES portfolios(id),source TEXT NOT NULL,filename TEXT NOT NULL,sha256 TEXT NOT NULL,row_count INTEGER NOT NULL,created_at TEXT NOT NULL,UNIQUE(portfolio_id,sha256));
+CREATE TABLE IF NOT EXISTS original_chunks(import_id TEXT NOT NULL REFERENCES imports(id),chunk_index INTEGER NOT NULL,content TEXT NOT NULL,PRIMARY KEY(import_id,chunk_index));
+CREATE TABLE IF NOT EXISTS entries(id TEXT PRIMARY KEY,import_id TEXT NOT NULL REFERENCES imports(id),portfolio_id TEXT NOT NULL REFERENCES portfolios(id),row_number INTEGER NOT NULL,occurred_on TEXT,kind TEXT NOT NULL,description TEXT NOT NULL,security TEXT,quantity TEXT,amount TEXT,currency TEXT NOT NULL,reference TEXT,fingerprint TEXT NOT NULL,raw_json TEXT NOT NULL,errors_json TEXT NOT NULL,warnings_json TEXT NOT NULL,status TEXT NOT NULL DEFAULT 'review' CHECK(status IN ('review','accepted','ignored')),created_at TEXT NOT NULL);
+CREATE INDEX IF NOT EXISTS entries_date ON entries(portfolio_id,occurred_on);
+CREATE INDEX IF NOT EXISTS entries_status ON entries(status);
+CREATE INDEX IF NOT EXISTS entries_fingerprint ON entries(portfolio_id,fingerprint);
+CREATE TABLE IF NOT EXISTS corporate_actions(id TEXT PRIMARY KEY,portfolio_id TEXT NOT NULL REFERENCES portfolios(id),effective_date TEXT NOT NULL,kind TEXT NOT NULL,security TEXT NOT NULL,notes TEXT NOT NULL,created_at TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS feature_choices(feature_id TEXT PRIMARY KEY,choice TEXT NOT NULL CHECK(choice IN('undecided','now','later','no')),updated_at TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS prices(instrument TEXT NOT NULL,currency TEXT NOT NULL,price TEXT NOT NULL,observed_at TEXT NOT NULL,source TEXT NOT NULL,PRIMARY KEY(instrument,source,observed_at));
+CREATE TABLE IF NOT EXISTS exchange_rates(base_currency TEXT NOT NULL,quote_currency TEXT NOT NULL,rate TEXT NOT NULL,effective_date TEXT NOT NULL,source TEXT NOT NULL,fetched_at TEXT NOT NULL,PRIMARY KEY(base_currency,quote_currency,effective_date,source));
+CREATE TABLE IF NOT EXISTS feed_runs(id TEXT PRIMARY KEY,provider TEXT NOT NULL,status TEXT NOT NULL,record_count INTEGER NOT NULL,message TEXT,created_at TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS audit_log(id TEXT PRIMARY KEY,event TEXT NOT NULL,entity_id TEXT NOT NULL,detail_json TEXT NOT NULL,created_at TEXT NOT NULL);

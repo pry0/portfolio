@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="robots" content="noindex,nofollow,noarchive" />
+    <meta name="theme-color" content="#172b28" />
+    <title>Portfolio — Investment workspace</title>
+    <link rel="stylesheet" href="/style.css" />
+    <script type="module" src="/app.js"></script>
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <aside class="sidebar">
+      <a class="brand" href="/" aria-label="Portfolio home"
+        ><span class="mark">p<span>↗</span></span
+        ><span>portfolio<small>YOUR INVESTMENT WORKSPACE</small></span></a
+      >
+      <div class="workspace">
+        <b>P</b>
+        <div>Private workspace<small>Personal · Company · Family</small></div>
+      </div>
+      <div class="nav-label">WORKSPACE</div>
+      <nav aria-label="Main navigation">
+        <button data-view="overview" class="nav active">
+          ◫ <span>Overview</span></button
+        ><button data-view="activity" class="nav">
+          ≋ <span>Transaction archive</span><b id="review-count">0</b></button
+        ><button data-view="actions" class="nav">
+          ↗ <span>Corporate actions</span></button
+        ><button data-view="imports" class="nav">
+          ↓ <span>Import centre</span></button
+        ><button data-view="feeds" class="nav">
+          ⌁ <span>Prices & connections</span>
+        </button>
+        <div class="nav-label">MAKE IT YOURS</div>
+        <button data-view="features" class="nav">
+          ⊞ <span>Feature planner</span>
+        </button>
+      </nav>
+      <div class="sidebar-footer">
+        <span class="dot"></span
+        ><span id="connection">Connecting workspace</span
+        ><small
+          >Every record. Every source.<br />Your history stays yours.</small
+        >
+      </div>
+    </aside>
+    <div class="main-wrap">
+      <header>
+        <span class="crumb"
+          >Workspace <i>/</i> <b id="breadcrumb">Overview</b></span
+        ><span class="version">EARLY ACCESS · 0.1</span
+        ><span class="avatar">P</span>
+      </header>
+      <main id="main">
+        <div class="notice" id="auth-banner" hidden></div>
+        <div class="page-title">
+          <div>
+            <span class="eyebrow" id="eyebrow"></span>
+            <h1 id="title"></h1>
+            <p id="description"></p>
+          </div>
+          <button class="button primary" data-view="imports">
+            ＋ Import records
+          </button>
+        </div>
+        <div id="view"></div>
+        <footer>
+          <span>Portfolio / A workspace built around you</span
+          ><span>Original records preserved · Private by design</span>
+        </footer>
+      </main>
+    </div>
+    <dialog id="dialog">
+      <form id="dialog-form">
+        <div class="dialog-head">
+          <h2 id="dialog-title"></h2>
+          <button type="button" id="close-dialog" aria-label="Close dialog">
+            ×
+          </button>
+        </div>
+        <div id="dialog-body"></div>
+        <p id="dialog-error" class="error" role="alert"></p>
+        <button class="button primary" id="dialog-submit" type="submit">
+          Save
+        </button>
+      </form>
+    </dialog>
+    <div id="toast" role="status" aria-live="polite"></div>
+  </body>
+</html>

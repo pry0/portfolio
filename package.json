@@ -1,0 +1,21 @@
+{
+  "name": "portfolio",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.23.0"
+  },
+  "scripts": {
+    "dev": "cf dev",
+    "build": "cf build",
+    "typecheck": "cf workers types && tsc && node --check src/app.js",
+    "test": "node --test tests/*.test.mjs",
+    "deploy": "cf deploy --prebuilt --mode production"
+  },
+  "devDependencies": {
+    "@cloudflare/vite-plugin": "beta",
+    "cf": "1.0.0-beta.28",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.0"
+  }
+}
