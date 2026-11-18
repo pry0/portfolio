@@ -1,5 +1,6 @@
 import { parseCSV } from "./imports.js";
 import { groups } from "./features.js";
+import { loadSharesight, sharesightView, sharesightClick } from "./sharesight-ui.js";
 const $ = (s) => document.querySelector(s),
   e = (v) =>
     String(v ?? "").replace(
@@ -44,6 +45,7 @@ let state = {
   handler = null,
   timer;
 const title = {
+  sharesight: ["YOUR HISTORY, PRESERVED", "Bring everything.<br><em>Check every record.</em>", "Copy Sharesight records, retain their originals and track what still needs checking."],
   overview: [
     "THE COMPLETE PICTURE",
     "Your investments.<br><em>All accounted for.</em>",
@@ -76,6 +78,7 @@ const title = {
   ],
 };
 const names = {
+  sharesight: "Sharesight migration",
   overview: "Overview",
   activity: "Transaction archive",
   actions: "Corporate actions",
@@ -112,6 +115,7 @@ async function request(path, data) {
 async function refresh() {
   try {
     state = await request("/api/state");
+    await loadSharesight(request);
     signedIn = true;
     $("#auth-banner").hidden = true;
     $("#connection").textContent = "Private workspace";
@@ -230,11 +234,11 @@ function feeds() {
     ],
     [
       "s.",
-      "Not connected",
+      "Migration available",
       "Sharesight",
-      "The complete migration is still to be run. Exported CSV records can be mapped and archived here.",
-      "imports",
-      "Import an export",
+      "Copy available history through your existing API application, including sold holdings, income, cash, custom prices and attachments. Track gaps before reconciling.",
+      "sharesight",
+      "Open migration",
     ],
     [
       "xero",
@@ -296,6 +300,7 @@ function render() {
     else b.removeAttribute("aria-current");
   });
   $("#view").innerHTML = {
+    sharesight: sharesightView,
     overview,
     activity,
     actions,
@@ -418,6 +423,12 @@ function download(name, data) {
 document.addEventListener("click", async (event) => {
   const target = event.target.closest("button,a");
   if (!target) return;
+  if (target.dataset.action?.startsWith("sharesight-") || target.dataset.ssKind || target.dataset.ssRecord || target.dataset.ssRetry) {
+    if (!authenticated()) return;
+    try { await sharesightClick(target, {request,render,toast,dialog}); }
+    catch(error) {toast(error.message);}
+    return;
+  }
   if (target.dataset.view) {
     go(target.dataset.view);
     return;
@@ -538,6 +549,10 @@ document.addEventListener("change", async (event) => {
   }
 });
 $("#close-dialog").addEventListener("click", () => $("#dialog").close());
+$("#dialog").addEventListener("close", () => {
+  $("#dialog-body").innerHTML = "";
+  handler = null;
+});
 $("#dialog-form").addEventListener("submit", async (event) => {
   event.preventDefault();
   $("#dialog-submit").disabled = true;

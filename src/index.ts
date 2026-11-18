@@ -3,6 +3,7 @@ import css from "./style.css?raw";
 import js from "./app.js?raw";
 import csv from "./imports.js?raw";
 import features from "./features.js?raw";
+import sharesightUI from "./sharesight-ui.js?raw";
 import { authorize } from "./auth.ts";
 import { api } from "./api.ts";
 import { refreshFeeds } from "./feeds.ts";
@@ -14,7 +15,7 @@ export default {
       response = Response.json({
         ok: true,
         service: "portfolio",
-        version: "0.1.0",
+        version: "0.2.0",
       });
     else if (path.startsWith("/api/"))
       response = (await authorize(request, env))
@@ -32,6 +33,7 @@ export default {
         "/app.js": [js, "text/javascript"],
         "/imports.js": [csv, "text/javascript"],
         "/features.js": [features, "text/javascript"],
+        "/sharesight-ui.js": [sharesightUI, "text/javascript"],
         "/robots.txt": ["User-agent: *\nDisallow: /\n", "text/plain"],
       };
       const asset = routes[path];

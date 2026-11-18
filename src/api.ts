@@ -1,5 +1,6 @@
 import { normalizeCSV, sha256, isoDate } from "./imports.js";
 import { refreshFeeds } from "./feeds.ts";
+import { sharesightAPI } from "./sharesight.ts";
 class InputError extends Error {}
 const fail = (m: string): never => {
   throw new InputError(m);
@@ -61,6 +62,7 @@ export async function api(request: Request, env: Env): Promise<Response> {
   const url = new URL(request.url),
     path = url.pathname;
   const json = (v: unknown, status = 200) => Response.json(v, { status });
+  if (path.startsWith("/api/sharesight/")) return sharesightAPI(request, env);
   try {
     if (
       request.method !== "GET" &&
@@ -389,7 +391,7 @@ export async function api(request: Request, env: Env): Promise<Response> {
       const data: Record<string, unknown> = {
         version: 1,
         exportedAt: new Date().toISOString(),
-        note: "Original CSV files are downloaded separately from the import centre.",
+        note: "Original CSV files are downloaded separately from the import centre. Sharesight API snapshots have a separate complete archive download in the Sharesight migration screen.",
       };
       for (const table of tables) {
         const count = await env.DB.prepare(

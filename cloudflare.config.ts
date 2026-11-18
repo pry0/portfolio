@@ -17,6 +17,7 @@ export default defineConfig(({ mode }) => ({
       ACCESS_TEAM_DOMAIN: bindings.secret(),
       ACCESS_AUD: bindings.secret(),
       OWNER_EMAIL: bindings.secret(),
+      MIGRATION_KEY: bindings.secret(),
       LOCAL_DEVELOPMENT: bindings.text(
         mode === "development" ? "true" : "false",
       ),

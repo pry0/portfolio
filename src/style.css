@@ -991,3 +991,4 @@ dialog::backdrop {
     transition: none !important;
   }
 }
+:root .source-json { white-space: pre-wrap; overflow-wrap: anywhere; max-height: 55vh; overflow-y: auto; font-size: 12px; }
